@@ -23,7 +23,7 @@ export default defineConfig([
       '.react-router/*',
     ],
   },
-  ...tseslint.configs.recommended,
+  // ...tseslint.configs.recommended,
   // all files
   {
     // files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],

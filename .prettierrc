@@ -5,5 +5,17 @@
   "singleQuote": true,
   "semi": false,
   "trailingComma": "all",
-  "plugins": ["prettier-plugin-tailwindcss"]
+  "embeddedLanguageFormatting": "auto",
+  "endOfLine": "lf",
+  "htmlWhitespaceSensitivity": "css",
+  "jsxSingleQuote": false,
+  "insertPragma": false,
+  "printWidth": 80,
+  "proseWrap": "always",
+  "quoteProps": "as-needed",
+  "requirePragma": false,
+  "singleAttributePerLine": false,
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "tailwindAttributes": ["class", "className", "ngClass", ".*[cC]lassName"],
+  "tailwindFunctions": ["clsx", "cn", "cva"]
 }
