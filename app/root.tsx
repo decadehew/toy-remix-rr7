@@ -1,6 +1,7 @@
 import {
   isRouteErrorResponse,
   Links,
+  Link,
   Meta,
   Outlet,
   Scripts,
@@ -8,7 +9,7 @@ import {
 } from 'react-router'
 
 import { type Route } from './+types/root'
-import tailwindStyleSheetUrl from './tailwindcss.css?url'
+import tailwindStyleSheetUrl from './tailwind.css?url'
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -29,14 +30,14 @@ export const links: Route.LinksFunction = () => [
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="h-full overflow-x-hidden">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="bg-background text-foreground flex h-full flex-col justify-between">
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -46,7 +47,29 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />
+  return (
+    <>
+      <header className="container mx-auto py-6">
+        <nav className="flex justify-between">
+          <Link to="/">
+            <div className="font-light">decadehew</div>
+            <div className="font-bold">notes</div>
+          </Link>
+        </nav>
+      </header>
+      <div className="flex-1">
+        <Outlet />
+      </div>
+      <div className="container mx-auto flex justify-between">
+        <Link to="/">
+          <div className="font-light">decadehew</div>
+          <div className="font-bold">notes</div>
+        </Link>
+        <p>Built with ♥️ by xxx</p>
+      </div>
+      <div className="h-5" />
+    </>
+  )
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
