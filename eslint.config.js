@@ -23,7 +23,7 @@ export default defineConfig([
       '.react-router/*',
     ],
   },
-  // ...tseslint.configs.recommended,
+  ...tseslint.configs.recommended,
   // all files
   {
     // files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
@@ -145,6 +145,9 @@ export default defineConfig([
         'error',
         { checksVoidReturn: false },
       ],
+
+      '@typescript-eslint/no-namespace': 'off',
+      '@typescript-eslint/no-empty-object-type': 'off',
 
       '@typescript-eslint/no-floating-promises': 'error',
 
