@@ -1,13 +1,14 @@
-import { Link, NavLink, Outlet, useLoaderData, useParams } from 'react-router'
+import { Link, NavLink, Outlet, useLoaderData } from 'react-router'
 
 import { type Route } from './+types/notes'
 
 import { cn } from '~/lib/utils'
 import { db } from '~/utils/db.server'
 import { invariantResponse } from '~/utils/invariant'
+import { GeneralErrorBoundary } from '~/components/error-boundary'
 
 export async function loader({ params }: Route.LoaderArgs) {
-  const owner = await db.user.findFirst({
+  const owner = db.user.findFirst({
     where: {
       username: {
         equals: params.username,
@@ -53,8 +54,10 @@ export default function NotesRoute() {
                 <li key={note.id} className="p-1 pr-0">
                   <NavLink
                     to={note.id}
+                    prefetch="intent"
+                    preventScrollReset
                     className={({ isActive }) =>
-                      cn(navLinkDefaultClassName, isActive && 'bg-yellow-300')
+                      cn(navLinkDefaultClassName, isActive && 'bg-gray-200')
                     }
                   >
                     {note.title}
@@ -64,10 +67,24 @@ export default function NotesRoute() {
             </ul>
           </div>
         </div>
-        <div className="relative col-span-3 bg-yellow-300 md:rounded-r-3xl">
+        <div className="relative col-span-3 bg-gray-200 md:rounded-r-3xl">
           <Outlet />
         </div>
       </div>
     </main>
+  )
+}
+
+export function ErrorBoundary() {
+  return (
+    <GeneralErrorBoundary
+      statusHandlers={{
+        404: ({ params }) => (
+          <p>
+            No user with the username "{params.username}" exists | (notes.tsx)
+          </p>
+        ),
+      }}
+    />
   )
 }

@@ -1,15 +1,18 @@
+import os from 'node:os'
 import {
-  isRouteErrorResponse,
   Links,
   Link,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from 'react-router'
 
 import { type Route } from './+types/root'
+import { GeneralErrorBoundary } from './components/error-boundary'
 import tailwindStyleSheetUrl from './tailwind.css?url'
+import { getEnv } from '~/utils/env.server'
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -27,6 +30,21 @@ export const links: Route.LinksFunction = () => [
     href: tailwindStyleSheetUrl,
   },
 ]
+
+export const meta: Route.MetaFunction = ({ data }) => {
+  return [
+    { title: data ? 'Epic Notes' : 'Error | Epic Notes' },
+    { name: 'description', content: `Your own captain's log` },
+  ]
+}
+
+export async function loader() {
+  // throw new Error('我錯了')
+  return {
+    username: os.userInfo().username,
+    ENV: getEnv(),
+  }
+}
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -47,13 +65,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  const data = useLoaderData<typeof loader>()
+
   return (
     <>
       <header className="container mx-auto py-6">
         <nav className="flex justify-between">
           <Link to="/">
-            <div className="font-light">decadehew</div>
+            <div className="font-light">epic</div>
             <div className="font-bold">notes</div>
+          </Link>
+          <Link className="underline" to="users/decade/notes">
+            DecadeHew's Notes
           </Link>
         </nav>
       </header>
@@ -65,38 +88,16 @@ export default function App() {
           <div className="font-light">decadehew</div>
           <div className="font-bold">notes</div>
         </Link>
-        <p>Built with ♥️ by xxx</p>
+        <p>Built with ♥️ by {data.username}</p>
       </div>
       <div className="h-5" />
+      <script
+        dangerouslySetInnerHTML={{
+          __html: ` window.ENV = ${JSON.stringify(data.ENV)}`,
+        }}
+      />
     </>
   )
 }
 
-export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
-  let message = 'Oops!'
-  let details = 'An unexpected error occurred.'
-  let stack: string | undefined
-
-  if (isRouteErrorResponse(error)) {
-    message = error.status === 404 ? '404' : 'Error'
-    details =
-      error.status === 404
-        ? 'The requested page could not be found.'
-        : error.statusText || details
-  } else if (import.meta.env.DEV && error && error instanceof Error) {
-    details = error.message
-    stack = error.stack
-  }
-
-  return (
-    <main className="container mx-auto p-4 pt-16">
-      <h1>{message}</h1>
-      <p>{details}</p>
-      {stack && (
-        <pre className="w-full overflow-x-auto p-4">
-          <code>{stack}</code>
-        </pre>
-      )}
-    </main>
-  )
-}
+export const ErrorBoundary = GeneralErrorBoundary

@@ -1,10 +1,29 @@
-import { Link, useLoaderData } from 'react-router'
+import {
+  isRouteErrorResponse,
+  Link,
+  useLoaderData,
+  useParams,
+  useRouteError,
+} from 'react-router'
 import { type Route } from './+types/$username'
 
 import { db } from '~/utils/db.server'
 import { invariantResponse } from '~/utils/invariant'
+import { GeneralErrorBoundary } from '~/components/error-boundary'
+
+export const meta: Route.MetaFunction = ({ data, params }) => {
+  const displayName = data?.user.name ?? params.username
+  return [
+    { title: `${displayName} | Epic Notes` },
+    {
+      name: 'description',
+      content: `Profile of ${displayName} on Epic Notes`,
+    },
+  ]
+}
 
 export async function loader({ params }: Route.LoaderArgs) {
+  // throw new Error('This is a test error')
   const user = await db.user.findFirst({
     where: {
       username: {
@@ -34,5 +53,17 @@ export default function DecadeProfileRoute() {
         Notes
       </Link>
     </div>
+  )
+}
+
+export function ErrorBoundary() {
+  return (
+    <GeneralErrorBoundary
+      statusHandlers={{
+        404: ({ params }) => (
+          <p>No user with the username "{params.username}" exists</p>
+        ),
+      }}
+    />
   )
 }
