@@ -207,7 +207,7 @@ async function writeImage(image: File) {
   const ext = (image.name.match(/\.([^.]*?)(?=\?|#|$)/) || [])[1]
   const filename = `${timestamp}.${ext}`
   const filepath = path.join(tmpDir, `${timestamp}.${ext}`)
-  console.log('filename', filename)
+  // console.log('filename', filename)
   await fs.writeFile(filepath, Buffer.from(await image.arrayBuffer()))
   return filepath
 }

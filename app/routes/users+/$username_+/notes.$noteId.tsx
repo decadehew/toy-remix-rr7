@@ -7,11 +7,11 @@ import {
 } from 'react-router'
 import { type Info as notesInfo } from './+types/notes'
 import { type Route } from './+types/notes.$noteId'
+import { GeneralErrorBoundary } from '~/components/error-boundary'
 import { floatingToolbarClassName } from '~/components/floating-toolbar'
 import { Button } from '~/components/ui/button'
 import { db } from '~/utils/db.server'
 import { invariantResponse } from '~/utils/invariant'
-import { GeneralErrorBoundary } from '~/components/error-boundary'
 
 export const meta: Route.MetaFunction = ({ data, params, matches }) => {
   const notesMatch = matches.find(
@@ -46,7 +46,14 @@ export async function loader({ params }: Route.LoaderArgs) {
   invariantResponse(note, 'Note not found', { status: 404 })
 
   return {
-    note: { title: note.title, content: note.content },
+    note: {
+      title: note.title,
+      content: note.content,
+      images: note.images.map((image) => ({
+        id: image.id,
+        altText: image.altText,
+      })),
+    },
   }
 }
 
@@ -68,6 +75,19 @@ export default function SomeNoteId() {
     <div className="absolute inset-0 flex flex-col px-10">
       <h2 className="text-h2 mb-2 pt-12 lg:mb-6">{data.note.title}</h2>
       <div className="overflow-y-auto pb-24">
+        <ul className="flex flex-wrap gap-5 py-5">
+          {data.note.images.map((image) => (
+            <li key={image.id}>
+              <a href={`/resources/images/${image.id}`}>
+                <img
+                  src={`/resources/images/${image.id}`}
+                  alt={image.altText ?? ''}
+                  className="h-32 w-32 rounded-lg object-cover"
+                />
+              </a>
+            </li>
+          ))}
+        </ul>
         <p className="text-sm whitespace-break-spaces md:text-lg">
           {data.note.content}
         </p>
