@@ -17,3 +17,7 @@ https://github.com/kiliman/remix-flat-routes 來代替
 
 Tailwind CSS IntelliSense 在 rr7 專案中不能 working，導致原因是 root.tsx import
 tailwind 不能以 tailwindcss.css 名稱來 import
+
+## 環境變數無法載入
+
+當 build && start 無法載入 root >>> .env 環境變數。

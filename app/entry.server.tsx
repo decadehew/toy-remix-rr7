@@ -7,11 +7,12 @@ import {
   renderToPipeableStream,
 } from 'react-dom/server'
 import { ServerRouter, type EntryContext } from 'react-router'
-import { getEnv } from './utils/env.server'
+import { getEnv, init } from './utils/env.server'
 
+// init()
 global.ENV = getEnv()
 
-console.log('entry.server.tsx')
+console.log('entry.server.tsx', process.env.HONEYPOT_SECRET)
 
 export const streamTimeout = 5_000
 

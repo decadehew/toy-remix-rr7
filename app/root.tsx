@@ -9,10 +9,12 @@ import {
   useLoaderData,
 } from 'react-router'
 
+import { HoneypotProvider } from 'remix-utils/honeypot/react'
 import { type Route } from './+types/root'
 import { GeneralErrorBoundary } from './components/error-boundary'
 import tailwindStyleSheetUrl from './tailwind.css?url'
 import { getEnv } from '~/utils/env.server'
+import { honeypot } from '~/utils/honeypot.server'
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -40,9 +42,11 @@ export const meta: Route.MetaFunction = ({ data }) => {
 
 export async function loader() {
   // throw new Error('我錯了')
+  const honeypotInputProps = honeypot.getInputProps()
   return {
     username: os.userInfo().username,
     ENV: getEnv(),
+    honeypotInputProps,
   }
 }
 
@@ -68,7 +72,7 @@ export default function App() {
   const data = useLoaderData<typeof loader>()
 
   return (
-    <>
+    <HoneypotProvider {...data.honeypotInputProps}>
       <header className="container mx-auto py-6">
         <nav className="flex justify-between">
           <Link to="/">
@@ -96,7 +100,7 @@ export default function App() {
           __html: ` window.ENV = ${JSON.stringify(data.ENV)}`,
         }}
       />
-    </>
+    </HoneypotProvider>
   )
 }
 
