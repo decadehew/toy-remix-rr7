@@ -21,3 +21,10 @@ tailwind 不能以 tailwindcss.css 名稱來 import
 ## 環境變數無法載入
 
 當 build && start 無法載入 root >>> .env 環境變數。
+
+解決：
+
+- build 後資料夾路徑不對，導致無法直接讀取根 env
+- 目前手動在 ./build/server/index.js >>> process.loadEnvFile();
+- https://nodejs.org/api/process.html#processloadenvfilepath -
+  default 路徑是 ./.env

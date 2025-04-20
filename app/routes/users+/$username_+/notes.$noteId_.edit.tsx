@@ -147,10 +147,6 @@ function ImageChooser({ meta }: { meta: FieldMetadata<ImageFieldset> }) {
   const { key: fileKey, ...fileProps } = getInputProps(fields.file, {
     type: 'file',
   })
-  const { key: altTextKey, ...altTextProps } = getTextareaProps(fields.altText)
-  const { key: idKey, ...idProps } = getInputProps(fields.id, {
-    type: 'hidden',
-  })
 
   return (
     <fieldset {...getFieldsetProps(meta)}>
@@ -185,7 +181,7 @@ function ImageChooser({ meta }: { meta: FieldMetadata<ImageFieldset> }) {
               )}
               {existingImage ? (
                 // 針對已存在圖片，取id，server 會進行圖片替換
-                <input {...idProps} key={idKey} />
+                <input {...getInputProps(fields.id, { type: 'hidden' })} />
               ) : null}
               <input
                 aria-label="Image"
@@ -217,8 +213,7 @@ function ImageChooser({ meta }: { meta: FieldMetadata<ImageFieldset> }) {
           <Textarea
             className="bg-background"
             onChange={(e) => setAltText(e.currentTarget.value)}
-            key={altTextKey}
-            {...altTextProps}
+            {...getTextareaProps(fields.altText)}
           />
         </div>
       </div>
